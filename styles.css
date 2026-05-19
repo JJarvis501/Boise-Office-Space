@@ -162,6 +162,20 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   font-style: italic;
   font-size: 18px;
 }
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  display: block;
+  object-fit: contain;
+  flex: 0 0 36px;
+}
+.footer-wordmark {
+  display: block;
+  height: auto;
+  width: 100%;
+  max-width: 260px;
+  margin-bottom: 20px;
+}
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text small {
   font-family: var(--font-body);
