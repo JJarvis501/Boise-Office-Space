@@ -297,27 +297,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   background: var(--ink);
 }
 
-/* Scroll-scrubbed video variant — sticky stage scrubs the video as the user scrolls through the section */
-.hero.hero-scroll {
-  min-height: 0;
-  height: 220vh;
-  display: block;
-  overflow: visible;
-}
-.hero-scroll-track {
-  position: relative;
-  height: 100%;
-}
-.hero-scroll-stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-  background: var(--ink);
-}
+/* Hero video — autoplay-loop background with subtle scroll parallax */
 .hero-video {
   position: absolute;
   inset: 0;
@@ -326,24 +306,56 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   object-fit: cover;
   z-index: 1;
   background: var(--ink);
-  /* Smooth out any tiny visual jumps when seeking */
+  /* Slight scale gives translate room for parallax without exposing edges */
+  transform: translate3d(0, 0, 0) scale(1.12);
   will-change: transform;
+  pointer-events: none;
 }
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(20,28,22,0.35) 0%, rgba(20,28,22,0.15) 35%, rgba(20,28,22,0.85) 100%);
+  background:
+    linear-gradient(180deg, rgba(20,28,22,0.35) 0%, rgba(20,28,22,0.15) 35%, rgba(20,28,22,0.85) 100%);
 }
-.hero.hero-scroll .hero-inner {
-  position: relative;
+.hero .hero-inner { position: relative; z-index: 3; }
+
+/* Scroll cue at the bottom of the hero */
+.hero-scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
   z-index: 3;
+  width: 22px;
+  height: 36px;
+  border: 1.5px solid rgba(251, 248, 242, 0.55);
+  border-radius: 12px;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 6px;
+  opacity: 0.85;
 }
+.hero-scroll-cue span {
+  display: block;
+  width: 2px;
+  height: 8px;
+  background: rgba(251, 248, 242, 0.85);
+  border-radius: 2px;
+  animation: heroScrollCue 1.6s var(--ease) infinite;
+}
+@keyframes heroScrollCue {
+  0%   { transform: translateY(0);   opacity: 0;   }
+  35%  { opacity: 1; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+@media (max-width: 700px) { .hero-scroll-cue { display: none; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero.hero-scroll { height: 100vh; }
-  .hero-scroll-stage { position: relative; }
+  .hero-video { transform: none; }
+  .hero-scroll-cue span { animation: none; opacity: 0.7; }
 }
 .hero-bg {
   position: absolute; inset: 0;

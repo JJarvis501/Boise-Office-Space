@@ -3,66 +3,79 @@
   document.querySelectorAll('#year').forEach(el => el.textContent = new Date().getFullYear());
 
   // ============================================
-  // Scroll-scrubbed hero video
-  // As the user scrolls through the .hero-scroll section, the video's
-  // currentTime is mapped to scroll progress through the section,
-  // with rAF + lerp smoothing for a buttery feel.
+  // Hero video parallax
+  // Video autoplays + loops as the hero background. As the user
+  // scrolls past the hero, the video drifts upward at ~30% of scroll
+  // speed and the foreground copy fades — creating depth without a
+  // sticky-scrub feel. rAF + lerp keeps it smooth.
   // ============================================
-  (function initHeroVideo() {
+  (function initHeroParallax() {
     const video = document.getElementById('heroVideo');
     if (!video) return;
-    const track = video.closest('.hero-scroll-track');
-    if (!track) return;
+    const hero = video.closest('.hero');
+    const inner = hero && hero.querySelector('.hero-inner');
+    if (!hero) return;
 
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // Respect user preference — let the poster image stand.
-      video.removeAttribute('autoplay');
-      return;
-    }
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let duration = 0;
-    let target = 0;
-    let current = 0;
-    let ready = false;
-    let lastSet = -1;
+    // Make sure the video actually plays — some browsers refuse autoplay
+    // until the document is interactive. Kick it once on first paint.
+    const tryPlay = () => { const p = video.play(); if (p && p.catch) p.catch(() => {}); };
+    if (video.readyState >= 2) tryPlay();
+    else video.addEventListener('loadeddata', tryPlay, { once: true });
 
-    function onMeta() {
-      duration = video.duration;
-      if (!isFinite(duration) || duration <= 0) return;
-      try { video.pause(); } catch (e) {}
-      ready = true;
-      update();
-      requestAnimationFrame(tick);
-    }
+    if (reduce) return;
 
-    function update() {
-      const rect = track.getBoundingClientRect();
-      const total = track.offsetHeight - window.innerHeight;
-      if (total <= 0) { target = 0; return; }
-      const progress = Math.max(0, Math.min(1, -rect.top / total));
-      target = progress * duration;
+    let targetY = 0;
+    let currentY = 0;
+    let targetFade = 1;
+    let currentFade = 1;
+    let raf = 0;
+    let running = false;
+
+    const PARALLAX_STRENGTH = 0.30;  // 0 = no parallax; 1 = full lockstep with scroll
+    const FADE_START = 0.40;         // % of hero scrolled before copy starts fading
+    const LERP = 0.12;
+
+    function read() {
+      const rect = hero.getBoundingClientRect();
+      const height = hero.offsetHeight || rect.height || 1;
+      // Skip if hero is fully off-screen
+      if (rect.bottom < -200 || rect.top > window.innerHeight + 200) return;
+      // Parallax: as hero scrolls up out of view, push video up
+      const scrolled = Math.max(0, -rect.top);
+      targetY = -scrolled * PARALLAX_STRENGTH;
+      // Fade hero copy out gradually as the user scrolls past
+      const progress = Math.min(1, scrolled / height);
+      targetFade = progress > FADE_START
+        ? Math.max(0, 1 - (progress - FADE_START) / (1 - FADE_START))
+        : 1;
     }
 
     function tick() {
-      if (!ready) return;
-      // Smooth easing toward target (lerp factor controls feel)
-      current += (target - current) * 0.12;
-      const diff = Math.abs(target - current);
-      // Only seek when the delta is meaningful (avoids spamming currentTime)
-      if (diff > 0.01 && Math.abs(current - lastSet) > 0.03) {
-        try {
-          video.currentTime = current;
-          lastSet = current;
-        } catch (e) { /* seek not ready yet */ }
+      currentY += (targetY - currentY) * LERP;
+      currentFade += (targetFade - currentFade) * LERP;
+      video.style.transform = `translate3d(0, ${currentY.toFixed(2)}px, 0) scale(1.12)`;
+      if (inner) inner.style.opacity = currentFade.toFixed(3);
+      // Keep ticking while there's perceptible delta
+      if (Math.abs(targetY - currentY) > 0.05 || Math.abs(targetFade - currentFade) > 0.005) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        running = false;
       }
-      requestAnimationFrame(tick);
     }
 
-    if (video.readyState >= 1) onMeta();
-    else video.addEventListener('loadedmetadata', onMeta, { once: true });
+    function onScroll() {
+      read();
+      if (!running) {
+        running = true;
+        raf = requestAnimationFrame(tick);
+      }
+    }
 
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
   })();
 
   // Sticky nav shadow on scroll
