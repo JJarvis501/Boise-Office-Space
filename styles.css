@@ -296,6 +296,55 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   color: var(--cream);
   background: var(--ink);
 }
+
+/* Scroll-scrubbed video variant — sticky stage scrubs the video as the user scrolls through the section */
+.hero.hero-scroll {
+  min-height: 0;
+  height: 220vh;
+  display: block;
+  overflow: visible;
+}
+.hero-scroll-track {
+  position: relative;
+  height: 100%;
+}
+.hero-scroll-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--ink);
+}
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  background: var(--ink);
+  /* Smooth out any tiny visual jumps when seeking */
+  will-change: transform;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(20,28,22,0.35) 0%, rgba(20,28,22,0.15) 35%, rgba(20,28,22,0.85) 100%);
+}
+.hero.hero-scroll .hero-inner {
+  position: relative;
+  z-index: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.hero-scroll { height: 100vh; }
+  .hero-scroll-stage { position: relative; }
+}
 .hero-bg {
   position: absolute; inset: 0;
   background-size: cover;

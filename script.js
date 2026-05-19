@@ -2,6 +2,69 @@
   // Year stamp
   document.querySelectorAll('#year').forEach(el => el.textContent = new Date().getFullYear());
 
+  // ============================================
+  // Scroll-scrubbed hero video
+  // As the user scrolls through the .hero-scroll section, the video's
+  // currentTime is mapped to scroll progress through the section,
+  // with rAF + lerp smoothing for a buttery feel.
+  // ============================================
+  (function initHeroVideo() {
+    const video = document.getElementById('heroVideo');
+    if (!video) return;
+    const track = video.closest('.hero-scroll-track');
+    if (!track) return;
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Respect user preference — let the poster image stand.
+      video.removeAttribute('autoplay');
+      return;
+    }
+
+    let duration = 0;
+    let target = 0;
+    let current = 0;
+    let ready = false;
+    let lastSet = -1;
+
+    function onMeta() {
+      duration = video.duration;
+      if (!isFinite(duration) || duration <= 0) return;
+      try { video.pause(); } catch (e) {}
+      ready = true;
+      update();
+      requestAnimationFrame(tick);
+    }
+
+    function update() {
+      const rect = track.getBoundingClientRect();
+      const total = track.offsetHeight - window.innerHeight;
+      if (total <= 0) { target = 0; return; }
+      const progress = Math.max(0, Math.min(1, -rect.top / total));
+      target = progress * duration;
+    }
+
+    function tick() {
+      if (!ready) return;
+      // Smooth easing toward target (lerp factor controls feel)
+      current += (target - current) * 0.12;
+      const diff = Math.abs(target - current);
+      // Only seek when the delta is meaningful (avoids spamming currentTime)
+      if (diff > 0.01 && Math.abs(current - lastSet) > 0.03) {
+        try {
+          video.currentTime = current;
+          lastSet = current;
+        } catch (e) { /* seek not ready yet */ }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if (video.readyState >= 1) onMeta();
+    else video.addEventListener('loadedmetadata', onMeta, { once: true });
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+  })();
+
   // Sticky nav shadow on scroll
   const nav = document.getElementById('nav');
   if (nav) {
