@@ -1568,6 +1568,161 @@ form.contact-form {
 }
 .compare-cta .btn { margin-top: 24px; }
 
+/* ============================================
+   Building scorecard (per-building page)
+   ============================================ */
+
+.scorecard-section {
+  background:
+    radial-gradient(900px 500px at 80% -10%, rgba(47, 74, 58, 0.06), transparent 60%),
+    var(--cream);
+}
+
+.scorecard {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .scorecard { grid-template-columns: 1fr; gap: 32px; }
+}
+
+.scorecard-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.score-tile {
+  padding: clamp(24px, 3vw, 36px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.score-tile.is-top {
+  border-color: rgba(47, 74, 58, 0.4);
+  box-shadow: 0 0 0 1px rgba(47, 74, 58, 0.2), 0 18px 40px rgba(26, 31, 28, 0.06);
+}
+.score-tile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.score-tile-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+.score-tile-value {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-size: clamp(54px, 6vw, 76px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+.score-tile-value .max {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 4px;
+}
+.score-tile .score-bar {
+  margin-top: 18px;
+  height: 8px;
+}
+.score-tile-note {
+  margin-top: 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.scorecard-side {
+  display: flex;
+  flex-direction: column;
+}
+.scorecard-eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--moss);
+  font-weight: 600;
+  margin: 0;
+}
+.scorecard-side h3 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.2vw, 38px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-top: 12px;
+  color: var(--ink);
+}
+.scorecard-side .amenity-list {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+.scorecard-side .amenity-list li {
+  font-size: 13px;
+  padding: 7px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+.scorecard-bestfit {
+  margin-top: 28px;
+  padding: 22px 24px;
+  border-left: 3px solid var(--forest);
+  background: var(--paper);
+  border-radius: 0 12px 12px 0;
+}
+.scorecard-bestfit .best-fit-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--moss);
+  font-weight: 600;
+  margin: 0;
+}
+.scorecard-bestfit .best-fit-text {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink);
+  line-height: 1.45;
+  font-weight: 400;
+}
+.scorecard-compare-link {
+  margin-top: 28px;
+  align-self: flex-start;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--forest);
+  border-bottom: 1px solid var(--forest);
+  padding-bottom: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.25s var(--ease);
+}
+.scorecard-compare-link:hover { gap: 10px; }
+
 /* ---------- Map module (tabbed: building vs parking) ---------- */
 .map-module {
   display: flex;
