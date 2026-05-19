@@ -81,6 +81,32 @@
   }
 
   // ============================================
+  // Map tabs (Building / Nearby parking)
+  // ============================================
+  document.querySelectorAll('[data-map-module]').forEach(mod => {
+    const frame = mod.querySelector('[data-map-frame]');
+    const tabs = mod.querySelectorAll('[data-map-tab]');
+    if (!frame || !tabs.length) return;
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (tab.classList.contains('active')) return;
+        tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const key = tab.dataset.mapTab; // "location" | "parking"
+        const datasetKey = 'src' + key.charAt(0).toUpperCase() + key.slice(1);
+        const newSrc = frame.dataset[datasetKey];
+        if (newSrc && frame.src !== newSrc) frame.src = newSrc;
+        const titles = {
+          location: 'Map · building location',
+          parking:  'Map · nearby parking'
+        };
+        if (titles[key]) frame.title = titles[key];
+      });
+    });
+  });
+
+  // ============================================
   // Qualification wizard
   // ============================================
   initWizard();

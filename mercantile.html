@@ -165,9 +165,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p>Coby Barlow · <a href="tel:+12082870113">208 287-0113</a></p>
         </div>
       </div>
-      <div class="map-wrap reveal delay-1">
-        <iframe loading="lazy" title="Map of 404 S 8th Street, Boise"
-          src="https://www.google.com/maps?q=404+S+8th+St,+Boise,+ID&output=embed"></iframe>
+      <div class="map-module reveal delay-1" data-map-module>
+        <div class="map-tabs" role="tablist" aria-label="Map view">
+          <button type="button" class="map-tab active" data-map-tab="location" role="tab" aria-selected="true"><span class="dot"></span>Building</button>
+          <button type="button" class="map-tab" data-map-tab="parking" role="tab" aria-selected="false"><span class="dot"></span>Nearby parking</button>
+        </div>
+        <div class="map-wrap">
+          <iframe data-map-frame loading="lazy" title="Map of 404 S 8th Street, Boise"
+            data-src-location="https://www.google.com/maps?q=404+S+8th+St,+Boise,+ID&output=embed&z=17"
+            data-src-parking="https://www.google.com/maps?q=parking+near+404+S+8th+St,+Boise,+ID&output=embed&z=16"
+            src="https://www.google.com/maps?q=404+S+8th+St,+Boise,+ID&output=embed&z=17"></iframe>
+        </div>
+        <p class="map-caption">Switch to <strong>Nearby parking</strong> to see public garages and surface lots ringing the 8th Street Marketplace block.</p>
       </div>
     </div>
   </div>
