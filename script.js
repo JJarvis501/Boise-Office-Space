@@ -92,6 +92,7 @@
       name: 'Northrup Building',
       address: '405 South 8th Street',
       page: 'northrup.html',
+      heroImage: 'Brand%20Assets/downtownboiseoffices62-HERO-scaled.jpg',
       positioning: 'The most amenity-rich block in BoDo — food, coffee, and nightlife at your door.',
       amenityScore: 9.3,
       parkingScore: 8.2,
@@ -114,6 +115,7 @@
       name: 'Sonna Building',
       address: '906–910 Main Street',
       page: 'sonna.html',
+      heroImage: 'Brand%20Assets/downtownboiseoffices127-HERO-scaled.jpg',
       positioning: 'Main Street frontage with a polished, professional downtown address.',
       amenityScore: 8.7,
       parkingScore: 8.0,
@@ -136,6 +138,7 @@
       name: 'Mercantile Building',
       address: '404 South 8th Street',
       page: 'mercantile.html',
+      heroImage: 'Brand%20Assets/downtownboiseoffices39_HERO-scaled.jpg',
       positioning: 'Historic 8th Street Marketplace with creative office energy and Greenbelt access.',
       amenityScore: 9.1,
       parkingScore: 8.3,
@@ -677,19 +680,23 @@
       } else {
         matches.forEach((m, i) => {
           const isBest = i === 0;
+          const buildingData = BUILDINGS_COMPARE.find(b => b.name.startsWith(m.building));
+          const img = buildingData && buildingData.heroImage;
           const card = document.createElement('article');
           card.className = 'match-card' + (isBest ? ' best-fit' : '');
           card.innerHTML = `
-            ${isBest ? '<span class="best-fit-tag">Best fit</span>' : ''}
-            <span class="building-pill">${m.building} Building</span>
-            <h4>Suite ${m.unit}</h4>
-            <div class="match-meta">
-              <span><strong>${formatNum(m.sf)}</strong> sq ft</span>
-              <span class="price">$${formatNum(m.monthly)}<small>/mo</small></span>
+            ${img ? `<div class="match-thumb"><img src="${img}" alt="${m.building} Building interior" loading="lazy" />${isBest ? '<span class="best-fit-tag">Best fit</span>' : ''}</div>` : (isBest ? '<span class="best-fit-tag">Best fit</span>' : '')}
+            <div class="match-body">
+              <span class="building-pill">${m.building} Building</span>
+              <h4>Suite ${m.unit}</h4>
+              <div class="match-meta">
+                <span><strong>${formatNum(m.sf)}</strong> sq ft</span>
+                <span class="price">$${formatNum(m.monthly)}<small>/mo</small></span>
+              </div>
+              <a class="match-link" href="${m.page}?suite=${encodeURIComponent(m.building + ' ' + m.unit)}">
+                View suite →
+              </a>
             </div>
-            <a class="match-link" href="${m.page}?suite=${encodeURIComponent(m.building + ' ' + m.unit)}">
-              View suite →
-            </a>
           `;
           grid.appendChild(card);
         });
