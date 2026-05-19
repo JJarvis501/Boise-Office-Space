@@ -81,6 +81,159 @@
   }
 
   // ============================================
+  // Amenities & Building Scores — comparison cards
+  // Edit BUILDINGS_COMPARE below to update copy.
+  // ============================================
+  initCompare();
+
+  function initCompare() {
+    const grid = document.getElementById('compareGrid');
+    if (!grid) return;
+
+    const BUILDINGS_COMPARE = [
+      {
+        id: 'northrup',
+        name: 'Northrup Building',
+        address: '405 South 8th Street',
+        page: 'northrup.html',
+        positioning: 'The most amenity-rich block in BoDo — food, coffee, and nightlife at your door.',
+        amenityScore: 9.3,
+        parkingScore: 8.2,
+        reasoning: 'Strong on-site food, coffee, and nightlife inside the 8th Street Marketplace, with nearby public garages and metered street parking on every side.',
+        amenities: [
+          'Slow By Slow Coffee',
+          'Solid Grill & Bar',
+          'Liquid Lounge',
+          'BoDo district',
+          'Boise Greenbelt',
+          'Hotels',
+          'Warehouse Food Hall',
+          'Restaurants & nightlife'
+        ],
+        bestFit: 'Creative teams, startups, client-facing firms, and companies that value walkability.'
+      },
+      {
+        id: 'sonna',
+        name: 'Sonna Building',
+        address: '906–910 Main Street',
+        page: 'sonna.html',
+        positioning: 'Main Street frontage with a polished, professional downtown address.',
+        amenityScore: 8.7,
+        parkingScore: 8.0,
+        reasoning: 'Main Street frontage with cafés, salons, financial services, and restaurants; public garages on adjacent blocks; strong downtown visibility for client-facing work.',
+        amenities: [
+          'Alias Coffee House',
+          'Charles Schwab',
+          'Fête Style Bar',
+          'Downtown restaurants',
+          'Retail',
+          'Hotels',
+          'Transit access',
+          'BoDo nearby'
+        ],
+        bestFit: 'Professional services, finance, legal, consulting, and teams wanting a polished downtown address.'
+      },
+      {
+        id: 'mercantile',
+        name: 'Mercantile Building',
+        address: '404 South 8th Street',
+        page: 'mercantile.html',
+        positioning: 'Historic 8th Street Marketplace with creative office energy and Greenbelt access.',
+        amenityScore: 9.1,
+        parkingScore: 8.3,
+        reasoning: 'Historic 8th Street Marketplace setting with restaurants, salon services, boutique retail, and easy Greenbelt access, plus several nearby public parking options.',
+        amenities: [
+          'NATURALLY Salon',
+          'Slow By Slow Coffee',
+          'Restaurants',
+          'Boutique retail',
+          'Art & galleries',
+          'Warehouse Food Hall',
+          'Boise Greenbelt',
+          'Entertainment venues'
+        ],
+        bestFit: 'Design firms, tech teams, wellness brands, boutique agencies, and creative professionals.'
+      }
+    ];
+
+    const topAmenity = Math.max(...BUILDINGS_COMPARE.map(b => b.amenityScore));
+    const topParking = Math.max(...BUILDINGS_COMPARE.map(b => b.parkingScore));
+
+    const escapeHtml = (s) => String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+    grid.innerHTML = BUILDINGS_COMPARE.map(b => {
+      const isTopA = b.amenityScore === topAmenity;
+      const isTopP = b.parkingScore === topParking;
+      const aPct = Math.max(0, Math.min(100, (b.amenityScore / 10) * 100));
+      const pPct = Math.max(0, Math.min(100, (b.parkingScore / 10) * 100));
+      const headingId = `compare-${b.id}-h`;
+      return `
+        <article class="compare-card" role="listitem" aria-labelledby="${headingId}">
+          <div class="badges" aria-hidden="${!(isTopA || isTopP)}">
+            ${isTopA ? '<span class="compare-badge amenity" title="Highest amenity score">Top amenities</span>' : ''}
+            ${isTopP ? '<span class="compare-badge parking" title="Highest parking score">Top parking</span>' : ''}
+          </div>
+          <p class="address">${escapeHtml(b.address)}</p>
+          <h3 id="${headingId}">${escapeHtml(b.name)}</h3>
+          <p class="position">${escapeHtml(b.positioning)}</p>
+
+          <div class="score-block">
+            <div class="score-pair">
+              <div class="score-row">
+                <span class="score-label">Amenity score</span>
+                <span class="score-value">${b.amenityScore.toFixed(1)}<span class="max">/10</span></span>
+              </div>
+              <div class="score-bar${isTopA ? ' top' : ''}" role="progressbar" aria-valuenow="${b.amenityScore}" aria-valuemin="0" aria-valuemax="10" aria-label="Amenity score">
+                <span class="fill" data-fill="${aPct}"></span>
+              </div>
+            </div>
+
+            <div class="score-pair">
+              <div class="score-row">
+                <span class="score-label">Parking score</span>
+                <span class="score-value">${b.parkingScore.toFixed(1)}<span class="max">/10</span></span>
+              </div>
+              <div class="score-bar${isTopP ? ' top' : ''}" role="progressbar" aria-valuenow="${b.parkingScore}" aria-valuemin="0" aria-valuemax="10" aria-label="Parking score">
+                <span class="fill" data-fill="${pPct}"></span>
+              </div>
+            </div>
+          </div>
+
+          <p class="reasoning">${escapeHtml(b.reasoning)}</p>
+
+          <ul class="amenity-list" aria-label="On-site and nearby amenities">
+            ${b.amenities.map(a => `<li>${escapeHtml(a)}</li>`).join('')}
+          </ul>
+
+          <div class="best-fit">
+            <p class="best-fit-label">Best fit</p>
+            <p class="best-fit-text">${escapeHtml(b.bestFit)}</p>
+            <a class="card-link" href="${b.page}">Explore the ${escapeHtml(b.name.replace(' Building',''))} →</a>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Animate score bars on scroll
+    const fills = grid.querySelectorAll('.fill');
+    if ('IntersectionObserver' in window && fills.length) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.width = e.target.dataset.fill + '%';
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.25 });
+      fills.forEach(f => io.observe(f));
+    } else {
+      fills.forEach(f => f.style.width = f.dataset.fill + '%');
+    }
+  }
+
+  // ============================================
   // Map tabs (Building / Nearby parking)
   // ============================================
   document.querySelectorAll('[data-map-module]').forEach(mod => {
