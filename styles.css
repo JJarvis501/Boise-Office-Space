@@ -297,20 +297,23 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   background: var(--ink);
 }
 
-/* Hero video — autoplay-loop background with subtle scroll parallax */
-.hero-video {
+/* Scroll-driven hero — canvas renders frame-by-frame as the user scrolls past */
+.hero-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   z-index: 1;
-  background: var(--ink);
-  /* Slight scale gives translate room for parallax without exposing edges */
-  transform: translate3d(0, 0, 0) scale(1.12);
-  will-change: transform;
+  background-color: var(--ink);
+  background-image: url('Brand%20Assets/cityscape.png');
+  background-size: cover;
+  background-position: center;
   pointer-events: none;
+  /* Fade in once frames start drawing */
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
 }
+.hero-canvas.ready { opacity: 1; }
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -320,43 +323,6 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
     linear-gradient(180deg, rgba(20,28,22,0.35) 0%, rgba(20,28,22,0.15) 35%, rgba(20,28,22,0.85) 100%);
 }
 .hero .hero-inner { position: relative; z-index: 3; }
-
-/* Scroll cue at the bottom of the hero */
-.hero-scroll-cue {
-  position: absolute;
-  left: 50%;
-  bottom: 28px;
-  z-index: 3;
-  width: 22px;
-  height: 36px;
-  border: 1.5px solid rgba(251, 248, 242, 0.55);
-  border-radius: 12px;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 6px;
-  opacity: 0.85;
-}
-.hero-scroll-cue span {
-  display: block;
-  width: 2px;
-  height: 8px;
-  background: rgba(251, 248, 242, 0.85);
-  border-radius: 2px;
-  animation: heroScrollCue 1.6s var(--ease) infinite;
-}
-@keyframes heroScrollCue {
-  0%   { transform: translateY(0);   opacity: 0;   }
-  35%  { opacity: 1; }
-  100% { transform: translateY(14px); opacity: 0; }
-}
-@media (max-width: 700px) { .hero-scroll-cue { display: none; } }
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-video { transform: none; }
-  .hero-scroll-cue span { animation: none; opacity: 0.7; }
-}
 .hero-bg {
   position: absolute; inset: 0;
   background-size: cover;

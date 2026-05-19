@@ -3,64 +3,92 @@
   document.querySelectorAll('#year').forEach(el => el.textContent = new Date().getFullYear());
 
   // ============================================
-  // Hero video parallax
-  // Video autoplays + loops as the hero background. As the user
-  // scrolls past the hero, the video drifts upward at ~30% of scroll
-  // speed and the foreground copy fades — creating depth without a
-  // sticky-scrub feel. rAF + lerp keeps it smooth.
+  // Scroll-driven hero canvas
+  // Frames are pre-extracted as WebP images in /frames/. As the user
+  // scrolls past the hero, the canvas draws the corresponding frame.
+  // The hero stays a normal 100vh-ish section — no sticky pin, no
+  // 220vh trap. The canvas lives inside the hero so it scrolls away
+  // naturally once the user is into the next section.
+  //
+  // Approach is the SKILL.md frame-canvas pattern: two-phase image
+  // preload (first 12 frames fast for first paint, rest in background),
+  // devicePixelRatio-correct canvas, cover-style draw, rAF + lerp for
+  // buttery scrub.
   // ============================================
-  (function initHeroParallax() {
-    const video = document.getElementById('heroVideo');
-    if (!video) return;
-    const hero = video.closest('.hero');
-    const inner = hero && hero.querySelector('.hero-inner');
+  (function initHeroCanvas() {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    const hero = canvas.closest('.hero');
     if (!hero) return;
 
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FRAME_COUNT = parseInt(hero.dataset.frameCount, 10) || 192;
+    const framePath = (i) => `frames/frame_${String(i + 1).padStart(4, '0')}.webp`;
+    const ctx = canvas.getContext('2d');
+    const frames = new Array(FRAME_COUNT);
 
-    // Make sure the video actually plays — some browsers refuse autoplay
-    // until the document is interactive. Kick it once on first paint.
-    const tryPlay = () => { const p = video.play(); if (p && p.catch) p.catch(() => {}); };
-    if (video.readyState >= 2) tryPlay();
-    else video.addEventListener('loadeddata', tryPlay, { once: true });
+    function loadFrame(i) {
+      return new Promise((resolve) => {
+        if (frames[i]) return resolve(frames[i]);
+        const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => { frames[i] = img; resolve(img); };
+        img.onerror = () => { resolve(null); };
+        img.src = framePath(i);
+      });
+    }
 
-    if (reduce) return;
+    // ---- Canvas sizing (DPR-aware) ----
+    let cssW = 0, cssH = 0;
+    function resize() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      cssW = canvas.offsetWidth || hero.offsetWidth || window.innerWidth;
+      cssH = canvas.offsetHeight || hero.offsetHeight || window.innerHeight;
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw(Math.round(currentFrame));
+    }
 
-    let targetY = 0;
-    let currentY = 0;
-    let targetFade = 1;
-    let currentFade = 1;
-    let raf = 0;
+    // ---- Draw a frame, cover-mode ----
+    function draw(i) {
+      const img = frames[Math.max(0, Math.min(FRAME_COUNT - 1, i))];
+      if (!img) return;
+      const iw = img.naturalWidth || img.width;
+      const ih = img.naturalHeight || img.height;
+      if (!iw || !ih || !cssW || !cssH) return;
+      const scale = Math.max(cssW / iw, cssH / ih);
+      const dw = iw * scale;
+      const dh = ih * scale;
+      const dx = (cssW - dw) / 2;
+      const dy = (cssH - dh) / 2;
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    // ---- Scroll → frame mapping ----
+    let currentFrame = 0;
+    let targetFrame = 0;
     let running = false;
-
-    const PARALLAX_STRENGTH = 0.30;  // 0 = no parallax; 1 = full lockstep with scroll
-    const FADE_START = 0.40;         // % of hero scrolled before copy starts fading
-    const LERP = 0.12;
 
     function read() {
       const rect = hero.getBoundingClientRect();
-      const height = hero.offsetHeight || rect.height || 1;
-      // Skip if hero is fully off-screen
-      if (rect.bottom < -200 || rect.top > window.innerHeight + 200) return;
-      // Parallax: as hero scrolls up out of view, push video up
-      const scrolled = Math.max(0, -rect.top);
-      targetY = -scrolled * PARALLAX_STRENGTH;
-      // Fade hero copy out gradually as the user scrolls past
-      const progress = Math.min(1, scrolled / height);
-      targetFade = progress > FADE_START
-        ? Math.max(0, 1 - (progress - FADE_START) / (1 - FADE_START))
-        : 1;
+      const height = hero.offsetHeight || 1;
+      // progress 0 when hero top hits viewport top; 1 when hero is fully scrolled past
+      const progress = Math.max(0, Math.min(1, -rect.top / height));
+      targetFrame = progress * (FRAME_COUNT - 1);
     }
 
     function tick() {
-      currentY += (targetY - currentY) * LERP;
-      currentFade += (targetFade - currentFade) * LERP;
-      video.style.transform = `translate3d(0, ${currentY.toFixed(2)}px, 0) scale(1.12)`;
-      if (inner) inner.style.opacity = currentFade.toFixed(3);
-      // Keep ticking while there's perceptible delta
-      if (Math.abs(targetY - currentY) > 0.05 || Math.abs(targetFade - currentFade) > 0.005) {
-        raf = requestAnimationFrame(tick);
+      // Lerp toward target for smoothness
+      const diff = targetFrame - currentFrame;
+      currentFrame += diff * 0.22;
+      const idx = Math.round(currentFrame);
+      draw(idx);
+      if (Math.abs(diff) > 0.05) {
+        requestAnimationFrame(tick);
       } else {
+        currentFrame = targetFrame;
+        draw(Math.round(currentFrame));
         running = false;
       }
     }
@@ -69,13 +97,33 @@
       read();
       if (!running) {
         running = true;
-        raf = requestAnimationFrame(tick);
+        requestAnimationFrame(tick);
       }
     }
 
+    // ---- Two-phase preload ----
+    const FIRST_BATCH = Math.min(12, FRAME_COUNT);
+    const priority = [];
+    for (let i = 0; i < FIRST_BATCH; i++) priority.push(loadFrame(i));
+
+    Promise.all(priority).then(() => {
+      resize();
+      read();
+      draw(Math.round(currentFrame));
+      canvas.classList.add('ready');
+      // Background-load the rest, with mild concurrency
+      let i = FIRST_BATCH;
+      const PARALLEL = 6;
+      function pump() {
+        const batch = [];
+        for (let k = 0; k < PARALLEL && i < FRAME_COUNT; k++, i++) batch.push(loadFrame(i));
+        if (batch.length) Promise.all(batch).then(pump);
+      }
+      pump();
+    });
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    onScroll();
+    window.addEventListener('resize', () => { resize(); onScroll(); });
   })();
 
   // Sticky nav shadow on scroll
