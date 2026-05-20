@@ -171,9 +171,8 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 }
 .footer-wordmark {
   display: block;
-  height: auto;
-  width: 100%;
-  max-width: 260px;
+  height: 64px;
+  width: auto;
   margin-bottom: 20px;
 }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
