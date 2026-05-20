@@ -305,10 +305,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   overflow: hidden;
   color: var(--cream);
   background: var(--ink);
-  /* Floor so the hero has enough vertical scroll-room for the user to
-     see all 192 frames as they scroll past. Above the floor the hero
-     grows to fit content + padding. */
-  min-height: 78vh;
+  /* No min-height — hero is exactly content + padding so the canvas
+     video crops naturally to the text area. The padding-top / bottom
+     on .hero-inner is the aesthetic margin around the text. */
 }
 
 /* Scroll-driven hero — canvas renders frame-by-frame as the user scrolls past */
@@ -366,7 +365,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 }
 .hero .eyebrow { color: rgba(251, 248, 242, 0.85); }
 .hero h1 { color: var(--cream); max-width: 18ch; }
-.hero h1 em { color: var(--ochre); }
+/* Use terracotta instead of ochre on the hero — the cityscape has
+   amber/gold tones that blended with ochre. Terracotta sits in the
+   same warm family but with a distinct rust shift that stands out. */
+.hero h1 em {
+  color: var(--terracotta);
+  text-shadow: 0 2px 24px rgba(20, 28, 22, 0.35);
+}
 .hero-lede {
   margin-top: 24px;
   max-width: 56ch;
