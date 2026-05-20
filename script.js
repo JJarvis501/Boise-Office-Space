@@ -153,7 +153,10 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    // threshold 0 (any visibility triggers) — a positive threshold
+    // can fail to fire on elements taller than the viewport (the
+    // suite-galleries section on Sonna is ~7000px tall)
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
     reveals.forEach(el => io.observe(el));
   } else {
     reveals.forEach(el => el.classList.add('in'));
@@ -631,6 +634,9 @@
 
     slot.innerHTML = list.map(u => renderSuiteCard(u)).join('');
     wireGalleryNav(slot);
+    // Belt-and-suspenders: ensure the slot is visible even if the
+    // global reveal IntersectionObserver missed it (tall container).
+    slot.classList.add('in');
   }
 
   function renderSuiteCard(u) {
