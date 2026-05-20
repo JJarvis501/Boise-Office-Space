@@ -766,53 +766,80 @@ form.contact-form {
 
 .building-hero {
   position: relative;
-  padding: clamp(96px, 13vw, 160px) 0 clamp(64px, 9vw, 110px);
-  background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
-  border-bottom: 1px solid var(--line);
+  padding: clamp(140px, 17vw, 220px) 0 clamp(80px, 10vw, 130px);
+  background: var(--ink);
+  color: var(--cream);
+  overflow: hidden;
+  isolation: isolate;
 }
+.building-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  /* Hold-the-camera-still feel; very slow drift so the image never feels static */
+  transform: scale(1.06);
+  animation: buildingHeroFloat 26s var(--ease) infinite alternate;
+}
+.building-hero-bg::after {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(20,28,22,0.45) 0%, rgba(20,28,22,0.30) 25%, rgba(20,28,22,0.78) 100%);
+}
+@keyframes buildingHeroFloat {
+  from { transform: scale(1.05) translateY(0); }
+  to   { transform: scale(1.10) translateY(-2%); }
+}
+.building-hero > .container { position: relative; z-index: 1; }
 .building-hero .crumb {
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgba(251, 248, 242, 0.78);
   margin-bottom: 18px;
 }
 .building-hero h1 {
-  font-size: clamp(48px, 7vw, 88px);
+  font-size: clamp(48px, 7vw, 92px);
   font-weight: 400;
   letter-spacing: -0.02em;
   max-width: 14ch;
+  color: var(--cream);
 }
-.building-hero h1 em { font-style: italic; color: var(--forest); }
+.building-hero h1 em { font-style: italic; color: var(--ochre); }
 .building-hero .sub {
   margin-top: 20px;
   font-size: clamp(17px, 1.3vw, 20px);
-  color: var(--ink-soft);
+  color: rgba(251, 248, 242, 0.88);
   max-width: 56ch;
 }
 .building-hero .specs {
-  margin-top: 48px;
+  margin-top: 56px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(251, 248, 242, 0.18);
   padding-top: 32px;
 }
 .building-hero .specs .spec-label {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgba(251, 248, 242, 0.6);
 }
 .building-hero .specs .spec-value {
   margin-top: 6px;
   font-family: var(--font-display);
   font-size: clamp(24px, 2.4vw, 32px);
   font-weight: 500;
-  color: var(--ink);
+  color: var(--cream);
 }
 @media (max-width: 800px) {
   .building-hero .specs { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .building-hero-bg { animation: none; transform: scale(1.04); }
 }
 
 .gallery {
