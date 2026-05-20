@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Photos coming soon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Photos coming soon">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#f7f3ec"/>
@@ -9,25 +9,20 @@
       <circle cx="2" cy="2" r="1" fill="#d9d4ca"/>
     </pattern>
   </defs>
-  <rect width="800" height="600" fill="url(#bgGrad)"/>
-  <rect width="800" height="600" fill="url(#dots)" opacity="0.55"/>
-  <rect x="30" y="30" width="740" height="540" rx="10" ry="10" fill="none" stroke="#d9d4ca" stroke-width="2" stroke-dasharray="8 8"/>
+  <rect width="1600" height="500" fill="url(#bgGrad)"/>
+  <rect width="1600" height="500" fill="url(#dots)" opacity="0.55"/>
 
-  <!-- Camera mark -->
-  <g transform="translate(400 250)" stroke="#2f4a3a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="-110" y="-58" width="220" height="138" rx="14" ry="14" fill="#fbf8f2"/>
-    <rect x="-44" y="-78" width="88" height="22" rx="6" ry="6" fill="#fbf8f2"/>
-    <circle cx="0" cy="22" r="38"/>
-    <circle cx="0" cy="22" r="20"/>
-    <circle cx="72" cy="-32" r="5" fill="#c89a4a" stroke="none"/>
+  <!-- Camera mark on the left -->
+  <g transform="translate(560 250)" stroke="#2f4a3a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-90" y="-50" width="180" height="115" rx="12" ry="12" fill="#fbf8f2"/>
+    <rect x="-36" y="-67" width="72" height="20" rx="6" ry="6" fill="#fbf8f2"/>
+    <circle cx="0" cy="18" r="32"/>
+    <circle cx="0" cy="18" r="16"/>
+    <circle cx="60" cy="-26" r="4" fill="#c89a4a" stroke="none"/>
   </g>
 
-  <!-- Eyebrow -->
-  <text x="400" y="400" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="600" letter-spacing="3.2" text-anchor="middle" fill="#6b716c">PHOTOS</text>
-
-  <!-- Headline -->
-  <text x="400" y="455" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-weight="500" font-size="44" text-anchor="middle" fill="#1a1f1c">Coming soon.</text>
-
-  <!-- Subhead -->
-  <text x="400" y="500" font-family="Inter, Arial, sans-serif" font-size="14" text-anchor="middle" fill="#6b716c">Schedule a tour for an in-person walkthrough.</text>
+  <!-- Headline + subhead on the right -->
+  <text x="800" y="220" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" letter-spacing="3.5" text-anchor="start" fill="#6b716c">PHOTOS</text>
+  <text x="800" y="290" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-weight="500" font-size="64" text-anchor="start" fill="#1a1f1c">Coming soon.</text>
+  <text x="800" y="335" font-family="Inter, Arial, sans-serif" font-size="16" text-anchor="start" fill="#6b716c">Schedule a tour for an in-person walkthrough.</text>
 </svg>

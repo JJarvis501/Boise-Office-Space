@@ -2008,15 +2008,18 @@ form.contact-form {
   .strip-nav { display: none; }
 }
 
-/* Coming-soon placeholder */
+/* Coming-soon placeholder — matches the photo strip's block height
+   so suite cards with/without photos sit at the same height */
 .suite-card-coming-soon {
   padding: 16px;
   background: var(--paper);
 }
 .suite-card-coming-soon img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  /* Same height as a single .suite-card-shot (width clamp(220,32vw,380) at 3:2) */
+  height: clamp(147px, 21.3vw, 253px);
   object-fit: cover;
+  object-position: center;
   display: block;
   border-radius: 10px;
 }
