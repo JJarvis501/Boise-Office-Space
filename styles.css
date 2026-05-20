@@ -294,31 +294,21 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
 /* ---------- Hero ---------- */
 
-/* Outer wrapper. The scroll-track inside defines the section's height
-   so the canvas video can scrub through frames as the user scrolls. */
+/* Hero is fit-to-content in normal document flow. No sticky, no scroll
+   track. The canvas covers the hero and frames advance as the user
+   scrolls past the section (the entire video plays through by the time
+   the hero scrolls off-screen). */
 .hero {
   position: relative;
-  color: var(--cream);
-  background: var(--ink);
-}
-
-/* Scroll-scrubbed hero: total height = SCRUB_LENGTH; the inner viewport
-   pins via position:sticky while the user scrolls through the track,
-   advancing the canvas video one frame per ~0.5vh. */
-.hero-scroll-track {
-  position: relative;
-  /* 200vh total = 100vh of scrub on top of the visible viewport */
-  height: 200vh;
-}
-.hero-viewport {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
   display: flex;
   align-items: flex-end;
+  overflow: hidden;
+  color: var(--cream);
   background: var(--ink);
+  /* Floor so the hero has enough vertical scroll-room for the user to
+     see all 192 frames as they scroll past. Above the floor the hero
+     grows to fit content + padding. */
+  min-height: 78vh;
 }
 
 /* Scroll-driven hero — canvas renders frame-by-frame as the user scrolls past */
@@ -327,6 +317,7 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   inset: 0;
   width: 100%;
   height: 100%;
+  display: block;            /* kill inline baseline gap */
   z-index: 1;
   background-color: var(--ink);
   background-image: url('Brand%20Assets/cityscape.png');
@@ -343,8 +334,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   inset: 0;
   z-index: 2;
   pointer-events: none;
+  /* Softer bottom darkness so the gradient doesn't read as a dark bar */
   background:
-    linear-gradient(180deg, rgba(20,28,22,0.35) 0%, rgba(20,28,22,0.15) 35%, rgba(20,28,22,0.85) 100%);
+    linear-gradient(180deg, rgba(20,28,22,0.30) 0%, rgba(20,28,22,0.05) 30%, rgba(20,28,22,0.10) 60%, rgba(20,28,22,0.55) 100%);
 }
 .hero .hero-inner { position: relative; z-index: 3; }
 .hero-bg {
@@ -367,10 +359,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   position: relative;
   z-index: 2;
   width: 100%;
-  /* Fit-to-content: no forced top padding. The sticky viewport is 100vh
-     and the text sits at its natural height anchored to the bottom. */
   padding-bottom: clamp(40px, 6vw, 88px);
-  padding-top: 24px;
+  /* A bit of breathing room above the eyebrow so the text doesn't sit
+     right against the nav on shorter viewports */
+  padding-top: clamp(96px, 10vw, 140px);
 }
 .hero .eyebrow { color: rgba(251, 248, 242, 0.85); }
 .hero h1 { color: var(--cream); max-width: 18ch; }
