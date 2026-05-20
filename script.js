@@ -908,9 +908,43 @@
 
       console.log('[Qualify] Lead captured:', lead);
       persistLead(lead);
+      // Fire-and-forget POST to the Oppenheimer CRM backend (no auth,
+      // public intake). Failure is non-blocking — the lead is already
+      // in localStorage and the email CTAs on the results screen are
+      // a safety net. Set window.OPPENHEIMER_API to a real URL once
+      // the Worker is deployed (see Oppenheimer/docs/api.md).
+      postLeadToOppenheimer(lead);
       renderResults(lead, matches);
       showStep(4);
     });
+
+    async function postLeadToOppenheimer(lead) {
+      const base = (typeof window !== 'undefined' && window.OPPENHEIMER_API) || '';
+      if (!base) return; // Not configured yet — silently skip.
+      try {
+        const r = await fetch(base.replace(/\/$/, '') + '/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'website-wizard',
+            contact: lead.contact,
+            business: lead.business,
+            priorities: lead.priorities,
+            matches: lead.matches,
+            leadScore: lead.leadScore,
+            leadStatus: lead.leadStatus,
+            scoreBreakdown: lead.scoreBreakdown,
+            timestamp: lead.timestamp,
+            userAgent: lead.userAgent
+          })
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        console.log('[Qualify] Lead synced to CRM:', data.id);
+      } catch (e) {
+        console.warn('[Qualify] CRM sync failed (kept locally):', e.message);
+      }
+    }
 
     // ---- Restart ----
     document.getElementById('restartBtn')?.addEventListener('click', () => {
