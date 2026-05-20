@@ -205,6 +205,182 @@
   }
 
   // ============================================
+  // Available units across the three buildings.
+  // Single source of truth used by both the qualification wizard
+  // (for matching) and the per-building Suite Gallery section.
+  // ============================================
+  const ALL_UNITS = [
+    // ----- Northrup -----
+    { building: 'Northrup',   unit: '371',  sf: 1023, monthly: 1619.75, page: 'northrup.html' },
+    { building: 'Northrup',   unit: '250',  sf: 2370, monthly: 3555.00, page: 'northrup.html' },
+
+    // ----- Sonna (full inventory from source site) -----
+    { building: 'Sonna',      unit: '356',  sf:  279, monthly:  450.00, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '340',  sf:  869, monthly: 1375.92, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '322',  sf:  266, monthly:  399.00, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '400',  sf:  788, monthly: 1247.67, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '420',  sf:  526, monthly:  832.83, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '426',  sf: 1190, monthly: 1884.17, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '328',  sf:  220, monthly:  330.00, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '215',  sf: 2388, monthly: 3781.00, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '330',  sf:  243, monthly:  364.50, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '210',  sf:  615, monthly:  973.75, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '221',  sf:  430, monthly:  680.83, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '101',  sf: 4315, monthly: 6831.00, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '310',  sf: 2088, monthly: 3306.00, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '214',  sf: 1554, monthly: 2460.50, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '204',  sf:  550, monthly:  870.83, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '109',  sf: 1195, monthly: 1892.08, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '405',  sf: 1795, monthly: 2842.08, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '417',  sf: 1611, monthly: 2550.75, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '432',  sf:  488, monthly:  772.67, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '300',  sf: 4222, monthly: 6683.17, page: 'sonna.html' },
+    { building: 'Sonna',      unit: '212',  sf:  528, monthly:  836.00, page: 'sonna.html' },
+    // Sonna additions — photo folders exist on disk; specs TBD by leasing
+    { building: 'Sonna',      unit: '200',  sf:    0, monthly:    0,    page: 'sonna.html', specsTBD: true },
+    { building: 'Sonna',      unit: '222',  sf:    0, monthly:    0,    page: 'sonna.html', specsTBD: true },
+    { building: 'Sonna',      unit: '252',  sf:    0, monthly:    0,    page: 'sonna.html', specsTBD: true },
+    { building: 'Sonna',      unit: '258',  sf: 1563, monthly: 2344.50, page: 'sonna.html' },
+
+    // ----- Mercantile -----
+    { building: 'Mercantile', unit: 'L120', sf: 7144, monthly: 5953.33, page: 'mercantile.html' },
+    { building: 'Mercantile', unit: '166',  sf: 1593, monthly: 2787.75, page: 'mercantile.html' },
+    { building: 'Mercantile', unit: '300B', sf: 2492, monthly: 4153.33, page: 'mercantile.html' },
+    { building: 'Mercantile', unit: '203',  sf: 2145, monthly: 2860.00, page: 'mercantile.html' },
+    { building: 'Mercantile', unit: '200',  sf: 2168, monthly: 3974.67, page: 'mercantile.html' },
+    { building: 'Mercantile', unit: 'L138', sf: 1281, monthly: 1708.00, page: 'mercantile.html' }
+  ];
+
+  // ============================================
+  // Per-suite photo galleries (and building hero images)
+  // Keyed as "Building Suite" (case-sensitive). Empty array means the
+  // unit has no photos yet — UI shows the "coming soon" placeholder.
+  // ============================================
+  const COMING_SOON = 'Brand%20Assets/image-coming-soon.svg';
+
+  const BUILDING_HERO = {
+    'Northrup':   'Brand%20Assets/Northrup/Hero%20Northrup.jpg',
+    'Sonna':      'Brand%20Assets/Sonna/Hero%20Sonna.jpg',
+    'Mercantile': 'Brand%20Assets/Mercantile/Hero%20Mercantile.jpg'
+  };
+
+  const SUITE_PHOTOS = {
+    // ----- Northrup -----
+    'Northrup 250': [
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-62-1536x1024.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-63-1536x1024.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-64-1536x1024.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-65-1536x1024.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-66-1536x1024.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-67-1536x1024.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-68-1536x1065.avif',
+      'Brand%20Assets/Northrup/Suite%20250/250721_8thStreetMarketplace-69-1536x1060.avif'
+    ],
+    'Northrup 371': [
+      'Brand%20Assets/Northrup/Suite%20371/250721_8thStreetMarketplace-70-1536x1024.jpg',
+      'Brand%20Assets/Northrup/Suite%20371/250721_8thStreetMarketplace-71-1536x1062.jpg',
+      'Brand%20Assets/Northrup/Suite%20371/250721_8thStreetMarketplace-72-1536x1024.jpg',
+      'Brand%20Assets/Northrup/Suite%20371/floorplan.png'
+    ],
+
+    // ----- Sonna -----
+    'Sonna 200': [
+      'Brand%20Assets/Sonna/Suite%20200/DowntownBoiseOffices-84-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20200/DowntownBoiseOffices-85-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20200/DowntownBoiseOffices-88-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20200/DowntownBoiseOffices-118-1536x1024.jpg'
+    ],
+    'Sonna 210': [
+      'Brand%20Assets/Sonna/Suite%20210/DowntownBoiseOffices-91-1536x1050.avif',
+      'Brand%20Assets/Sonna/Suite%20210/DowntownBoiseOffices-92-1536x1024.avif',
+      'Brand%20Assets/Sonna/Suite%20210/DowntownBoiseOffices-93-1536x1024.avif'
+    ],
+    'Sonna 214': [
+      'Brand%20Assets/Sonna/Suite%20214/DowntownBoiseOffices-96-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20214/DowntownBoiseOffices-97-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20214/DowntownBoiseOffices-98-1536x1024.jpg'
+    ],
+    'Sonna 222': [
+      'Brand%20Assets/Sonna/Suite%20222/DowntownBoiseOffices-99-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20222/DowntownBoiseOffices-103-1536x1024.jpg'
+    ],
+    'Sonna 252': [
+      'Brand%20Assets/Sonna/Suite%20252/DowntownBoiseOffices-113-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20252/DowntownBoiseOffices-114-1536x1024.jpg'
+    ],
+    'Sonna 258': [
+      'Brand%20Assets/Sonna/Suite%20258/DowntownBoiseOffices-122-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20258/DowntownBoiseOffices-123-1536x1024.jpg'
+    ],
+    'Sonna 300': [
+      'Brand%20Assets/Sonna/Suite%20300/DowntownBoiseOffices-127-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20300/DowntownBoiseOffices-130-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20300/DowntownBoiseOffices-132-1536x1024.jpg'
+    ],
+    'Sonna 310': [
+      'Brand%20Assets/Sonna/Suite%20310/DowntownBoiseOffices-133-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20310/DowntownBoiseOffices-135-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20310/DowntownBoiseOffices-136-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20310/DowntownBoiseOffices-139-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20310/DowntownBoiseOffices-140-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20310/DowntownBoiseOffices-145-1536x1024.jpg'
+    ],
+    'Sonna 322': [
+      'Brand%20Assets/Sonna/Suite%20322/DowntownBoiseOffices-147-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20322/DowntownBoiseOffices-148-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20322/DowntownBoiseOffices-149-1536x1024.jpg',
+      'Brand%20Assets/Sonna/Suite%20322/DowntownBoiseOffices-150-1536x1024.jpg'
+    ],
+    'Sonna 356': [
+      'Brand%20Assets/Sonna/Suite%20356/DowntownBoiseOffices-154-1536x1024.avif',
+      'Brand%20Assets/Sonna/Suite%20356/DowntownBoiseOffices-155-1536x1024.avif',
+      'Brand%20Assets/Sonna/Suite%20356/DowntownBoiseOffices-157-1536x1024.avif'
+    ],
+
+    // ----- Mercantile -----
+    'Mercantile 200': [
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-33-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-34-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-35-1536x1030.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-36-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-37-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-38-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-39-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20200/DowntownBoiseOffices-40-1536x1024.avif'
+    ],
+    'Mercantile 203': [
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-47-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-48-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-49-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-50-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-51-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-52-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-53-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20203/DowntownBoiseOffices-54-1536x1024.avif'
+    ],
+    'Mercantile 300B': [
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-55-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-56-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-57-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-58-1536x1025.avif',
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-59-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-60-1536x1024.avif',
+      'Brand%20Assets/Mercantile/Suite%20300B/DowntownBoiseOffices-61-1536x1024.avif'
+    ]
+  };
+
+  function suiteThumb(building, unit) {
+    const arr = SUITE_PHOTOS[building + ' ' + unit];
+    if (arr && arr.length) return arr[0];
+    return BUILDING_HERO[building] || COMING_SOON;
+  }
+
+  function unitHasPhotos(building, unit) {
+    const arr = SUITE_PHOTOS[building + ' ' + unit];
+    return !!(arr && arr.length);
+  }
+
+  // ============================================
   // Amenities & Building Scores — shared data
   // Edit this array to update copy, scores, amenities, or best-fit
   // text everywhere on the site (homepage comparison + per-building
@@ -216,7 +392,7 @@
       name: 'Northrup Building',
       address: '405 South 8th Street',
       page: 'northrup.html',
-      heroImage: 'Brand%20Assets/downtownboiseoffices62-HERO-scaled.jpg',
+      heroImage: 'Brand%20Assets/Northrup/Hero%20Northrup.jpg',
       positioning: 'The most amenity-rich block in BoDo — food, coffee, and nightlife at your door.',
       amenityScore: 9.3,
       parkingScore: 8.2,
@@ -239,7 +415,7 @@
       name: 'Sonna Building',
       address: '906–910 Main Street',
       page: 'sonna.html',
-      heroImage: 'Brand%20Assets/downtownboiseoffices127-HERO-scaled.jpg',
+      heroImage: 'Brand%20Assets/Sonna/Hero%20Sonna.jpg',
       positioning: 'Main Street frontage with a polished, professional downtown address.',
       amenityScore: 8.7,
       parkingScore: 8.0,
@@ -262,7 +438,7 @@
       name: 'Mercantile Building',
       address: '404 South 8th Street',
       page: 'mercantile.html',
-      heroImage: 'Brand%20Assets/downtownboiseoffices39_HERO-scaled.jpg',
+      heroImage: 'Brand%20Assets/Mercantile/Hero%20Mercantile.jpg',
       positioning: 'Historic 8th Street Marketplace with creative office energy and Greenbelt access.',
       amenityScore: 9.1,
       parkingScore: 8.3,
@@ -431,6 +607,109 @@
   }
 
   // ============================================
+  // Per-building Suite Galleries
+  // Renders a section listing every suite for a given building. Each
+  // suite gets a card showing a horizontal photo strip; suites with
+  // no photos show the "coming soon" placeholder.
+  // ============================================
+  initSuiteGalleries();
+
+  function initSuiteGalleries() {
+    const slot = document.querySelector('[data-suite-galleries]');
+    if (!slot) return;
+    const building = slot.dataset.building;
+    if (!building) return;
+
+    // Suites in inventory for this building
+    const inventory = ALL_UNITS.filter(u => u.building === building);
+
+    // Any extra suites that have photo folders but aren't in inventory
+    const inventoryKeys = new Set(inventory.map(u => u.building + ' ' + u.unit));
+    const extras = Object.keys(SUITE_PHOTOS)
+      .filter(k => k.startsWith(building + ' ') && !inventoryKeys.has(k))
+      .map(k => {
+        const unit = k.slice(building.length + 1);
+        return { building, unit, sf: 0, monthly: 0, specsTBD: true };
+      });
+
+    const list = inventory.concat(extras).sort((a, b) => {
+      // Sort suites with photos first, then by unit number
+      const aHas = unitHasPhotos(a.building, a.unit) ? 0 : 1;
+      const bHas = unitHasPhotos(b.building, b.unit) ? 0 : 1;
+      if (aHas !== bHas) return aHas - bHas;
+      return String(a.unit).localeCompare(String(b.unit), undefined, { numeric: true });
+    });
+
+    slot.innerHTML = list.map(u => renderSuiteCard(u)).join('');
+    wireGalleryNav(slot);
+  }
+
+  function renderSuiteCard(u) {
+    const key = u.building + ' ' + u.unit;
+    const photos = SUITE_PHOTOS[key] || [];
+    const has = photos.length > 0;
+    const id = `suite-${u.building.toLowerCase()}-${String(u.unit).toLowerCase()}`;
+    const specs = u.specsTBD
+      ? '<span class="suite-card-spec specs-tbd">Specs available on request</span>'
+      : `<span class="suite-card-spec"><strong>${formatNum(u.sf)}</strong> sq ft</span>
+         <span class="suite-card-spec"><strong>$${formatNum(u.monthly)}</strong>/mo</span>`;
+
+    const gallery = has
+      ? `
+        <div class="suite-card-strip" data-strip>
+          <div class="suite-card-track" data-track>
+            ${photos.map((p, i) => `
+              <a class="suite-card-shot" href="${p}" target="_blank" rel="noopener" aria-label="Open photo ${i + 1} for Suite ${u.unit}">
+                <img src="${p}" alt="Suite ${u.unit} photo ${i + 1}" loading="lazy" />
+              </a>
+            `).join('')}
+          </div>
+          ${photos.length > 1
+            ? `<button type="button" class="strip-nav prev" data-dir="-1" aria-label="Previous photo">‹</button>
+               <button type="button" class="strip-nav next" data-dir="1"  aria-label="Next photo">›</button>
+               <span class="strip-count">${photos.length} photos</span>`
+            : ''}
+        </div>`
+      : `
+        <div class="suite-card-coming-soon" role="img" aria-label="Photos coming soon">
+          <img src="${COMING_SOON}" alt="" />
+        </div>`;
+
+    return `
+      <article class="suite-card" id="${id}">
+        <header class="suite-card-head">
+          <div>
+            <p class="suite-card-eyebrow">${u.building} Building</p>
+            <h3>Suite ${u.unit}</h3>
+          </div>
+          <div class="suite-card-meta">
+            ${specs}
+            <a class="btn btn-ghost btn-sm" href="contact.html?suite=${encodeURIComponent(key)}">Inquire <span class="arrow">→</span></a>
+          </div>
+        </header>
+        ${gallery}
+      </article>
+    `;
+  }
+
+  function wireGalleryNav(root) {
+    root.querySelectorAll('[data-strip]').forEach(strip => {
+      const track = strip.querySelector('[data-track]');
+      strip.querySelectorAll('.strip-nav').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dir = parseInt(btn.dataset.dir, 10) || 1;
+          const w = strip.clientWidth * 0.8;
+          track.scrollBy({ left: dir * w, behavior: 'smooth' });
+        });
+      });
+    });
+  }
+
+  function formatNum(n) {
+    return Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  }
+
+  // ============================================
   // Map tabs (Building / Nearby parking)
   // ============================================
   document.querySelectorAll('[data-map-module]').forEach(mod => {
@@ -466,32 +745,7 @@
     const form = document.getElementById('qualifyForm');
     if (!wizard || !form) return;
 
-    // ---- Available units ----
-    const UNITS = [
-      { building: 'Northrup',   unit: '371', sf: 1023, monthly: 1619.75, page: 'northrup.html' },
-      { building: 'Northrup',   unit: '250', sf: 2370, monthly: 3555.00, page: 'northrup.html' },
-      { building: 'Sonna',      unit: '356', sf:  279, monthly:  450.00, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '340', sf:  869, monthly: 1375.92, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '322', sf:  266, monthly:  399.00, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '400', sf:  788, monthly: 1247.67, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '420', sf:  526, monthly:  832.83, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '426', sf: 1190, monthly: 1884.17, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '328', sf:  220, monthly:  330.00, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '215', sf: 2388, monthly: 3781.00, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '330', sf:  243, monthly:  364.50, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '210', sf:  615, monthly:  973.75, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '221', sf:  430, monthly:  680.83, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '101', sf: 4315, monthly: 6831.00, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '310', sf: 2088, monthly: 3306.00, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '214', sf: 1554, monthly: 2460.50, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '204', sf:  550, monthly:  870.83, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '109', sf: 1195, monthly: 1892.08, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '405', sf: 1795, monthly: 2842.08, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '417', sf: 1611, monthly: 2550.75, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '432', sf:  488, monthly:  772.67, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '300', sf: 4222, monthly: 6683.17, page: 'sonna.html' },
-      { building: 'Sonna',      unit: '212', sf:  528, monthly:  836.00, page: 'sonna.html' }
-    ];
+    const UNITS = ALL_UNITS;
 
     // ---- State ----
     const state = {
@@ -685,8 +939,8 @@
       else if (budgetTier === 'mid') { sfMin = 700;  sfMax = 1800; }
       else { sfMin = 2000; sfMax = 20000; }
 
-      // Hard filter: within budget
-      const withinBudget = UNITS.filter(u => u.monthly <= budgetMax);
+      // Hard filter: within budget (and exclude units with specs TBD)
+      const withinBudget = UNITS.filter(u => !u.specsTBD && u.monthly <= budgetMax);
 
       // Primary: within SF tier
       let primary = withinBudget.filter(u => u.sf >= sfMin && u.sf <= sfMax);
@@ -804,12 +1058,17 @@
       } else {
         matches.forEach((m, i) => {
           const isBest = i === 0;
-          const buildingData = BUILDINGS_COMPARE.find(b => b.name.startsWith(m.building));
-          const img = buildingData && buildingData.heroImage;
+          const hasPhotos = unitHasPhotos(m.building, m.unit);
+          const img = suiteThumb(m.building, m.unit);
+          const altText = hasPhotos ? `Suite ${m.unit} in the ${m.building} Building` : `${m.building} Building (photos coming soon)`;
           const card = document.createElement('article');
           card.className = 'match-card' + (isBest ? ' best-fit' : '');
           card.innerHTML = `
-            ${img ? `<div class="match-thumb"><img src="${img}" alt="${m.building} Building interior" loading="lazy" />${isBest ? '<span class="best-fit-tag">Best fit</span>' : ''}</div>` : (isBest ? '<span class="best-fit-tag">Best fit</span>' : '')}
+            <div class="match-thumb${hasPhotos ? '' : ' is-coming-soon'}">
+              <img src="${img}" alt="${altText}" loading="lazy" />
+              ${isBest ? '<span class="best-fit-tag">Best fit</span>' : ''}
+              ${hasPhotos ? '' : '<span class="thumb-note">Photos coming soon</span>'}
+            </div>
             <div class="match-body">
               <span class="building-pill">${m.building} Building</span>
               <h4>Suite ${m.unit}</h4>
