@@ -20,6 +20,9 @@
     if (!canvas) return;
     const hero = canvas.closest('.hero');
     if (!hero) return;
+    // Prefer the scroll-track wrapper if present (sticky-scrub variant);
+    // fall back to the hero itself for the older flat layout.
+    const track = canvas.closest('.hero-scroll-track') || hero;
 
     const FRAME_COUNT = parseInt(hero.dataset.frameCount, 10) || 192;
     const framePath = (i) => `frames/frame_${String(i + 1).padStart(4, '0')}.webp`;
@@ -71,10 +74,19 @@
     let running = false;
 
     function read() {
-      const rect = hero.getBoundingClientRect();
-      const height = hero.offsetHeight || 1;
-      // progress 0 when hero top hits viewport top; 1 when hero is fully scrolled past
-      const progress = Math.max(0, Math.min(1, -rect.top / height));
+      // Map scroll position through the scroll-track to a frame index.
+      // The sticky viewport pins for (trackHeight - viewportHeight) of
+      // scroll — that's the scrub range. Outside that, frames clamp.
+      const rect = track.getBoundingClientRect();
+      const scrubRange = (track.offsetHeight || 1) - window.innerHeight;
+      if (scrubRange <= 0) {
+        // Track is shorter than viewport — fall back to whole-hero mapping
+        const r2 = hero.getBoundingClientRect();
+        const h = hero.offsetHeight || 1;
+        targetFrame = Math.max(0, Math.min(1, -r2.top / h)) * (FRAME_COUNT - 1);
+        return;
+      }
+      const progress = Math.max(0, Math.min(1, -rect.top / scrubRange));
       targetFrame = progress * (FRAME_COUNT - 1);
     }
 

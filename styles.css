@@ -294,13 +294,30 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
 /* ---------- Hero ---------- */
 
+/* Outer wrapper. The scroll-track inside defines the section's height
+   so the canvas video can scrub through frames as the user scrolls. */
 .hero {
   position: relative;
-  min-height: 88vh;
+  color: var(--cream);
+  background: var(--ink);
+}
+
+/* Scroll-scrubbed hero: total height = SCRUB_LENGTH; the inner viewport
+   pins via position:sticky while the user scrolls through the track,
+   advancing the canvas video one frame per ~0.5vh. */
+.hero-scroll-track {
+  position: relative;
+  /* 200vh total = 100vh of scrub on top of the visible viewport */
+  height: 200vh;
+}
+.hero-viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
   display: flex;
   align-items: flex-end;
-  overflow: hidden;
-  color: var(--cream);
   background: var(--ink);
 }
 
@@ -350,8 +367,10 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   position: relative;
   z-index: 2;
   width: 100%;
-  padding-bottom: clamp(48px, 9vw, 120px);
-  padding-top: clamp(80px, 14vw, 160px);
+  /* Fit-to-content: no forced top padding. The sticky viewport is 100vh
+     and the text sits at its natural height anchored to the bottom. */
+  padding-bottom: clamp(40px, 6vw, 88px);
+  padding-top: 24px;
 }
 .hero .eyebrow { color: rgba(251, 248, 242, 0.85); }
 .hero h1 { color: var(--cream); max-width: 18ch; }
