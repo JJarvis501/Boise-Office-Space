@@ -365,12 +365,16 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 }
 .hero .eyebrow { color: rgba(251, 248, 242, 0.85); }
 .hero h1 { color: var(--cream); max-width: 18ch; }
-/* Use terracotta instead of ochre on the hero — the cityscape has
-   amber/gold tones that blended with ochre. Terracotta sits in the
-   same warm family but with a distinct rust shift that stands out. */
+/* "Downtown Boise" — pure white is the only true cool-neutral in the
+   palette and the brightest tone available; everything in the warm
+   half (ochre, terracotta, even cream) blended with the cityscape's
+   golden-hour amber. A strong dark text-shadow gives it a halo so it
+   sits clearly above the photo regardless of the frame underneath. */
 .hero h1 em {
-  color: var(--terracotta);
-  text-shadow: 0 2px 24px rgba(20, 28, 22, 0.35);
+  color: var(--white);
+  text-shadow:
+    0 2px 20px rgba(20, 28, 22, 0.6),
+    0 1px 2px rgba(20, 28, 22, 0.45);
 }
 .hero-lede {
   margin-top: 24px;
