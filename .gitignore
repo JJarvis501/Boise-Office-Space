@@ -14,3 +14,6 @@ desktop.ini
 
 # Logs
 *.log
+
+# Build artifacts — regenerate with the staging script when needed
+*.zip
