@@ -3,6 +3,72 @@
   document.querySelectorAll('#year').forEach(el => el.textContent = new Date().getFullYear());
 
   // ============================================
+  // Scroll-driven image PAN for every hero on the site.
+  // The visible hero is compact (text + small margin). The image
+  // element inside is 200% tall, starts with its top aligned to the
+  // top of the visible window, and translates upward as the user
+  // scrolls so the bottom of the image ends up aligned to the bottom
+  // of the visible window. Driven by progress through the hero.
+  // ============================================
+  (function initHeroPan() {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targets = [];
+
+    // Home hero — pan the canvas
+    const canvas = document.getElementById('heroCanvas');
+    if (canvas) {
+      const host = canvas.closest('.hero');
+      if (host) targets.push({ host, pan: canvas });
+    }
+
+    // Building heroes — pan the background image element
+    document.querySelectorAll('.building-hero').forEach(host => {
+      const pan = host.querySelector('.building-hero-bg');
+      if (pan) targets.push({ host, pan });
+    });
+
+    if (!targets.length) return;
+    if (reduce) return;   // honor the user setting; the bg sits at top: 0 statically
+
+    targets.forEach(({ host, pan }) => {
+      let target = 0;
+      let current = 0;
+      let running = false;
+
+      function read() {
+        const rect = host.getBoundingClientRect();
+        const hostH = host.offsetHeight || 1;
+        const panH = pan.offsetHeight || hostH * 2;
+        const maxTranslate = Math.max(0, panH - hostH);
+        // 0 when hero top hits viewport top; 1 when hero is fully scrolled past
+        const progress = Math.max(0, Math.min(1, -rect.top / hostH));
+        target = -progress * maxTranslate;
+      }
+
+      function tick() {
+        current += (target - current) * 0.15;
+        pan.style.transform = `translate3d(0, ${current.toFixed(2)}px, 0)`;
+        if (Math.abs(target - current) > 0.1) {
+          requestAnimationFrame(tick);
+        } else {
+          current = target;
+          pan.style.transform = `translate3d(0, ${current.toFixed(2)}px, 0)`;
+          running = false;
+        }
+      }
+
+      function onScroll() {
+        read();
+        if (!running) { running = true; requestAnimationFrame(tick); }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    });
+  })();
+
+  // ============================================
   // Scroll-driven hero canvas
   // Frames are pre-extracted as WebP images in /frames/. As the user
   // scrolls past the hero, the canvas draws the corresponding frame.
