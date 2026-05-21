@@ -1,0 +1,40 @@
+# Netlify config — static site, no build step.
+# Drag the zip to https://app.netlify.com/drop, or connect this repo.
+
+[build]
+  publish = "."
+
+# Long-cache the immutable assets: the cityscape, building heroes,
+# all suite photos, and the 192 hero-canvas frames. Their contents
+# never change without a filename change (we'd version the file or
+# rename), so cache them aggressively.
+[[headers]]
+  for = "/Brand Assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/frames/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# CSS / JS get a one-day cache so updates propagate quickly without
+# spamming requests on every navigation.
+[[headers]]
+  for = "/styles.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+[[headers]]
+  for = "/script.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+# Baseline security + privacy headers on every response.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
