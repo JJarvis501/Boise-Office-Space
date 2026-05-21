@@ -294,36 +294,35 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 
 /* ---------- Hero ---------- */
 
-/* Compact hero — visible area = text card + small margin top/bottom.
-   The canvas inside is 200% tall and translates upward as the user
-   scrolls, so the full image/video reveals progressively without ever
-   showing all at once. */
+/* Hero is fit-to-content in normal document flow. No sticky, no scroll
+   track. The canvas covers the hero and frames advance as the user
+   scrolls past the section (the entire video plays through by the time
+   the hero scrolls off-screen). */
 .hero {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   overflow: hidden;
   color: var(--cream);
   background: var(--ink);
+  /* No min-height — hero is exactly content + padding so the canvas
+     video crops naturally to the text area. The padding-top / bottom
+     on .hero-inner is the aesthetic margin around the text. */
 }
 
-/* Scroll-driven hero — canvas renders frame-by-frame, AND it's 200% tall
-   so it can pan vertically as the user scrolls (translateY driven by JS) */
+/* Scroll-driven hero — canvas renders frame-by-frame as the user scrolls past */
 .hero-canvas {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
+  inset: 0;
   width: 100%;
-  height: 200%;
+  height: 100%;
   display: block;            /* kill inline baseline gap */
   z-index: 1;
   background-color: var(--ink);
   background-image: url('Brand%20Assets/cityscape.png');
   background-size: cover;
-  background-position: center top;
+  background-position: center;
   pointer-events: none;
-  will-change: transform;
   /* Fade in once frames start drawing */
   opacity: 0;
   transition: opacity 0.5s var(--ease);
@@ -357,30 +356,13 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 }
 .hero-inner {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   width: 100%;
-  /* Small outer margin — the visible photo strip extends just this far
-     beyond the text card top and bottom */
-  padding-block: clamp(28px, 3vw, 40px);
+  padding-bottom: clamp(40px, 6vw, 88px);
+  /* Comfortable but cropped — ~60-80px gap between nav and eyebrow on
+     desktop, scaling down on mobile. */
+  padding-top: clamp(48px, 5vw, 80px);
 }
-
-/* Glass card behind hero text — subtle dark backdrop with blur so the
-   typography reads on any frame, with a soft shadow for lift. Shared
-   between the home hero and all building heroes. */
-.hero-text-card {
-  display: block;
-  background: rgba(20, 28, 22, 0.42);
-  -webkit-backdrop-filter: blur(14px) saturate(135%);
-          backdrop-filter: blur(14px) saturate(135%);
-  border: 1px solid rgba(251, 248, 242, 0.10);
-  border-radius: 20px;
-  padding: clamp(28px, 3.4vw, 44px) clamp(28px, 3.4vw, 44px) clamp(32px, 3.4vw, 48px);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.28),
-    0 2px 4px rgba(0, 0, 0, 0.10);
-  max-width: 760px;
-}
-.building-hero .hero-text-card { max-width: 880px; }
 .hero .eyebrow { color: rgba(251, 248, 242, 0.85); }
 .hero h1 { color: var(--cream); max-width: 18ch; }
 /* "Downtown Boise" — pure white is the only true cool-neutral in the
@@ -402,15 +384,12 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
 }
 .hero-actions { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
 .hero-meta {
-  /* Inside the hero-text-card: lives as a stats footer at the bottom
-     of the card with a soft divider above */
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(251, 248, 242, 0.18);
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(48px, 9vw, 120px);
   display: flex;
-  gap: clamp(20px, 3vw, 40px);
+  gap: 40px;
   align-items: flex-end;
-  flex-wrap: wrap;
 }
 .hero-meta-item small {
   display: block;
@@ -814,33 +793,33 @@ form.contact-form {
 
 .building-hero {
   position: relative;
-  padding: clamp(28px, 3vw, 40px) 0;
+  padding: clamp(140px, 17vw, 220px) 0 clamp(80px, 10vw, 130px);
   background: var(--ink);
   color: var(--cream);
   overflow: hidden;
   isolation: isolate;
-  display: flex;
-  align-items: center;
 }
 .building-hero-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 200%;    /* 2x parent so JS can pan it via translateY */
+  inset: 0;
   z-index: 0;
   background-size: cover;
-  background-position: center top;
-  will-change: transform;
+  background-position: center;
+  /* Hold-the-camera-still feel; very slow drift so the image never feels static */
+  transform: scale(1.06);
+  animation: buildingHeroFloat 26s var(--ease) infinite alternate;
 }
 .building-hero-bg::after {
   content: "";
   position: absolute; inset: 0;
   background:
-    linear-gradient(180deg, rgba(20,28,22,0.45) 0%, rgba(20,28,22,0.30) 25%, rgba(20,28,22,0.55) 100%);
+    linear-gradient(180deg, rgba(20,28,22,0.45) 0%, rgba(20,28,22,0.30) 25%, rgba(20,28,22,0.78) 100%);
 }
-.building-hero > .container { position: relative; z-index: 1; width: 100%; }
-@media (prefers-reduced-motion: reduce) { .building-hero-bg { transform: none !important; } }
+@keyframes buildingHeroFloat {
+  from { transform: scale(1.05) translateY(0); }
+  to   { transform: scale(1.10) translateY(-2%); }
+}
+.building-hero > .container { position: relative; z-index: 1; }
 .building-hero .crumb {
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -863,12 +842,12 @@ form.contact-form {
   max-width: 56ch;
 }
 .building-hero .specs {
-  margin-top: 28px;
+  margin-top: 56px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: clamp(16px, 2vw, 28px);
+  gap: 32px;
   border-top: 1px solid rgba(251, 248, 242, 0.18);
-  padding-top: 20px;
+  padding-top: 32px;
 }
 .building-hero .specs .spec-label {
   font-size: 11px;
@@ -879,16 +858,20 @@ form.contact-form {
 .building-hero .specs .spec-value {
   margin-top: 6px;
   font-family: var(--font-display);
-  font-size: clamp(20px, 1.8vw, 26px);
+  font-size: clamp(24px, 2.4vw, 32px);
   font-weight: 500;
   color: var(--cream);
 }
 @media (max-width: 800px) {
-  .building-hero .specs { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .building-hero .specs { grid-template-columns: repeat(2, 1fr); gap: 24px; }
 }
 @media (max-width: 420px) {
-  .building-hero .specs { grid-template-columns: 1fr 1fr; gap: 14px; padding-top: 18px; margin-top: 22px; }
-  .building-hero .specs .spec-value { font-size: 18px; }
+  .building-hero { padding: clamp(110px, 28vw, 140px) 0 64px; }
+  .building-hero .specs { grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 24px; margin-top: 36px; }
+  .building-hero .specs .spec-value { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .building-hero-bg { animation: none; transform: scale(1.04); }
 }
 
 .gallery {
