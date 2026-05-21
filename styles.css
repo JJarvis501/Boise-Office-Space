@@ -952,6 +952,17 @@ form.contact-form {
 .footer ul li { padding: 5px 0; }
 .footer ul a { font-size: 14px; color: rgba(251, 248, 242, 0.78); transition: color 0.2s var(--ease); }
 .footer ul a:hover { color: var(--cream); }
+.footer-admin-link {
+  color: rgba(251, 248, 242, 0.35);
+  border-bottom: 1px dotted rgba(251, 248, 242, 0.25);
+  padding-bottom: 1px;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.footer-admin-link:hover {
+  color: var(--cream);
+  border-bottom-color: rgba(251, 248, 242, 0.6);
+}
+
 .footer-bottom {
   margin-top: 32px;
   display: flex;
