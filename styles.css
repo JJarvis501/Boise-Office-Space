@@ -4,19 +4,21 @@
    ============================================ */
 
 :root {
-  /* Palette — sage/forest + warm sandstone, evokes Boise foothills */
-  --ink: #1a1f1c;
-  --ink-soft: #2c322e;
+  /* Palette — sage/forest + warm sandstone. Saturation + contrast
+     bumped per client feedback ("photo and colors look a little too
+     muted") so accents pop without leaving the Boise-foothills feel. */
+  --ink: #12161a;
+  --ink-soft: #23292a;
   --muted: #6b716c;
-  --line: #d9d4ca;
-  --paper: #f7f3ec;
-  --paper-2: #efe9dc;
-  --cream: #fbf8f2;
-  --forest: #2f4a3a;
-  --forest-deep: #1f3327;
-  --moss: #5a6e4a;
-  --terracotta: #b75d3c;
-  --ochre: #c89a4a;
+  --line: #d4ccbe;
+  --paper: #f6f1e6;
+  --paper-2: #ece4d2;
+  --cream: #fcf9f2;
+  --forest: #1f5535;
+  --forest-deep: #143822;
+  --moss: #5f7a46;
+  --terracotta: #c0563a;
+  --ochre: #d8a049;
   --white: #ffffff;
 
   --shadow-sm: 0 1px 2px rgba(26, 31, 28, 0.06), 0 1px 3px rgba(26, 31, 28, 0.04);
@@ -67,9 +69,9 @@ a { color: inherit; text-decoration: none; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
   color: var(--ink);
 }
 
@@ -84,19 +86,19 @@ h1, h2, h3, h4 {
 
 .display {
   font-size: clamp(48px, 7vw, 96px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.022em;
 }
 
 .display em {
   font-style: italic;
   color: var(--forest);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 h2.section-title {
   font-size: clamp(34px, 4.5vw, 56px);
-  font-weight: 400;
+  font-weight: 600;
   margin-top: 12px;
 }
 
@@ -323,6 +325,9 @@ section { padding: clamp(72px, 10vw, 140px) 0; }
   background-size: cover;
   background-position: center;
   pointer-events: none;
+  /* "Lightroom" preset — punches contrast + saturation on the photo
+     so the golden-hour cityscape pops without going garish. */
+  filter: contrast(1.10) saturate(1.25) brightness(1.04);
   /* Fade in once frames start drawing */
   opacity: 0;
   transition: opacity 0.5s var(--ease);
@@ -808,6 +813,8 @@ form.contact-form {
   /* Hold-the-camera-still feel; very slow drift so the image never feels static */
   transform: scale(1.06);
   animation: buildingHeroFloat 26s var(--ease) infinite alternate;
+  /* Lightroom-style preset — match the home hero for consistency */
+  filter: contrast(1.10) saturate(1.25) brightness(1.04);
 }
 .building-hero-bg::after {
   content: "";
@@ -829,8 +836,8 @@ form.contact-form {
 }
 .building-hero h1 {
   font-size: clamp(48px, 7vw, 92px);
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.022em;
   max-width: 14ch;
   color: var(--cream);
 }
